@@ -69,7 +69,6 @@ public class FragmentShow extends Fragment {
             public void onResponse(Call<GiveawayValue> call, Response<GiveawayValue> response) {
                 allGiveawayAdapter.notifyDataSetChanged();
                 List<GiveawayDAO> giveawayList = response.body().getData();
-                Log.d("aw", giveawayList.toString());
                 if (giveawayList.isEmpty()) {
                     Log.d("ERROR", "Empty");
                 } else {

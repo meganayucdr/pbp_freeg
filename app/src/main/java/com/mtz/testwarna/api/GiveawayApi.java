@@ -15,7 +15,7 @@ public interface GiveawayApi {
     Call<GiveawayValue> getAllGiveaways();
 
     @GET("giveaways/{user_id}")
-    Call<GiveawayValue> getGiveawaysByUser(@Path("user_id") int user_id);
+    Call<GiveawayValue> getGiveawaysByUser(@Path("user_id") String user_id);
 
     @POST("giveaways")
     @FormUrlEncoded
@@ -33,4 +33,9 @@ public interface GiveawayApi {
                                 @Field("participants") int participants,
                                 @Field("status") String status,
                                 @Path("giveaway_id") int giveaway_id);
+
+    @PUT("giveaways/{giveaway_id}")
+    @FormUrlEncoded
+    Call<String> deleteGiveaway( @Field("status") String status,
+                                 @Path("giveaway_id") int giveaway_id);
 }
