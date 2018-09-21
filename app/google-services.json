@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "116163685999",
+    "firebase_url": "https://freegproject.firebaseio.com",
+    "project_id": "freegproject",
+    "storage_bucket": "freegproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116163685999:android:6888d31085735956",
+        "android_client_info": {
+          "package_name": "com.mtz.testwarna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116163685999-085o6nb23k5625j39j5f4nq0ab0a94vq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mtz.testwarna",
+            "certificate_hash": "a6514d2f30f31a3585f785eaca72911c6c1e0b26"
+          }
+        },
+        {
+          "client_id": "116163685999-209sotmmc68igkupjk7ebne0uno2822s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNAMit24ZrfuOP0HiExAXwHOifA1bEceU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116163685999-209sotmmc68igkupjk7ebne0uno2822s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

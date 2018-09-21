@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_myprofile"
+            android:icon="@drawable/ic_myprofile"
+            android:title="My Profile" />
+        <item
+            android:id="@+id/nav_giveaways"
+            android:icon="@drawable/ic_giveaways"
+            android:title="Giveaways" />
+        <item
+            android:id="@+id/nav_mygiveaway"
+            android:icon="@drawable/ic_mygiveaway"
+            android:title="My Giveaway" />
+        <item
+            android:id="@+id/nav_create"
+            android:icon="@drawable/ic_create"
+            android:title="Create Giveaway" />
+        <item
+            android:id="@+id/nav_edit"
+            android:icon="@drawable/ic_edit"
+            android:title="Edit My Giveaway" />
+        <item
+            android:id="@+id/nav_jgiveaway"
+            android:icon="@drawable/ic_joinedgiveaway"
+            android:title="Joined Giveaway" />
+    </group>
+
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_about"
+                android:title="About" />
+            <item
+                android:id="@+id/nav_signout"
+                android:icon="@drawable/ic_signout"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>
