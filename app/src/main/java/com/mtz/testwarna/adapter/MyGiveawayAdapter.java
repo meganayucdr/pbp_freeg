@@ -28,6 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+//Giveaway yang dibuat
 public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.GiveawayViewHolder> {
 
     private Context context;

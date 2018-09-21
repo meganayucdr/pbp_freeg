@@ -17,6 +17,5 @@ public interface GiveawayParticipantsApi {
     @POST("giveaways/{giveaway_id}/participants")
     @FormUrlEncoded
     Call<String> joinGiveaway(@Field("user_id") String userId,
-                              @Field("status") String status,
                               @Path("giveaway_id") int giveawayId);
 }

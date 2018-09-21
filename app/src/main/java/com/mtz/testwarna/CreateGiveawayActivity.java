@@ -79,7 +79,7 @@ public class CreateGiveawayActivity extends AppCompatActivity {
             //Buid retrofit
             Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
             GiveawayApi giveawayApi = retrofit.create(GiveawayApi.class);
-            Call<String> giveawayDAOCall = giveawayApi.addGiveaway(firebaseAuth.getCurrentUser().getUid(), editContent.getText().toString(),
+            Call<String> giveawayDAOCall = giveawayApi.addGiveaway(firebaseAuth.getCurrentUser().getUid(),editContent.getText().toString(),
                     "https://res.cloudinary.com/dhzln70wz/image/upload/v1537276689/etude-house-treats-for-my-sweets-items.jpg",
                     Integer.parseInt(editParticipants.getText().toString()), "Active");
             giveawayDAOCall.enqueue(new Callback<String>() {
