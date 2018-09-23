@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.jrvansuita:MaterialAbout-0.2.3">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/MaterialAbout-0.2.3.aar/993434e0ba250944995d9e7afb30af7c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/MaterialAbout-0.2.3.aar/993434e0ba250944995d9e7afb30af7c/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/MaterialAbout-0.2.3.aar/ad55767ac39af2c13b5b99724d4cfa84/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/MaterialAbout-0.2.3.aar/ad55767ac39af2c13b5b99724d4cfa84/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

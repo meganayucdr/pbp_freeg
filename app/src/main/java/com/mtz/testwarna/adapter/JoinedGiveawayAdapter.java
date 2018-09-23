@@ -40,7 +40,7 @@ public class JoinedGiveawayAdapter extends RecyclerView.Adapter<JoinedGiveawayAd
     public void onBindViewHolder(@NonNull JoinedGiveawayHolder joinedGiveawayHolder, int i) {
         final GiveawayDAO giveawayDAO = result.get(i);
         joinedGiveawayHolder.txtContent.setText(giveawayDAO.getDescription());
-        joinedGiveawayHolder.txtContent.setText(giveawayDAO.getStatus());
+        joinedGiveawayHolder.txtStatus.setText(giveawayDAO.getStatus());
         joinedGiveawayHolder.btnQuit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

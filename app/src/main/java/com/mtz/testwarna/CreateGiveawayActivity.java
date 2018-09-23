@@ -23,8 +23,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -68,22 +71,14 @@ public class CreateGiveawayActivity extends AppCompatActivity {
 
         setAttribute();
         assignUser();
-
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onClick(View view) {
-                onClickPost();
-            }
-        });
-        imageGiveaway.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, RESULT_CODE);
-            }
-        });
+//        imageGiveaway.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+//                photoPickerIntent.setType("image/*");
+//                startActivityForResult(photoPickerIntent, RESULT_CODE);
+//            }
+//        });
     }
 
     /*@Override
@@ -112,64 +107,96 @@ public class CreateGiveawayActivity extends AppCompatActivity {
         editContent = (EditText) findViewById(R.id.editContent);
         btnPost = (Button) findViewById(R.id.btnPost);
         imageGiveaway = (ImageView) findViewById(R.id.giveawayImage);
+
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View view) {
+                onClickPost();
+            }
+        });
     }
     private void assignUser()   {
         //txtUser.setText(firebaseAuth.getCurrentUser().getDisplayName());
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("");
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void onClickPost()  {
-        if (editParticipants.getText().toString().isEmpty() ||
-                editContent.getText().toString().isEmpty())   {
-            Toast.makeText(CreateGiveawayActivity.this, "Field can't be empty", Toast.LENGTH_SHORT).show();
-        } else {
-            //Post data into API
-            //Buid retrofit
-            Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
-            GiveawayApi giveawayApi = retrofit.create(GiveawayApi.class);
-            Call<GiveawayDAO> giveawayDAOCall = giveawayApi.addGiveaway(firebaseAuth.getCurrentUser().getUid(),
-                    editContent.getText().toString(),
-                    "https://res.cloudinary.com/dhzln70wz/image/upload/v1537276689/etude-house-treats-for-my-sweets-items.jpg",
-                    spinnerRegion.getSelectedCountryName(),
-                    Integer.parseInt(editParticipants.getText().toString()), "Active");
-            giveawayDAOCall.enqueue(new Callback<GiveawayDAO>() {
+        private void assignUser() {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            DatabaseReference ref = database.getReference("User");
+            ref.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onResponse(Call<GiveawayDAO> call, Response<GiveawayDAO> response) {
-                    Toast.makeText(CreateGiveawayActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(firebaseAuth.getCurrentUser().getUid()).getValue() != null) {
+                        Username username = dataSnapshot.child(firebaseAuth.getCurrentUser().getUid()).getValue(Username.class);
+                        Log.d("user", username.getUsername());
+                        txtUser.setText(username.getUsername());
+                    }
                 }
 
                 @Override
-                public void onFailure(Call<GiveawayDAO> call, Throwable t) {
-                    Toast.makeText(CreateGiveawayActivity.this, "Network Connection Fail", Toast.LENGTH_SHORT).show();
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d("ERROR", databaseError.getMessage());
+                }
+            });
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        private void onClickPost() {
+            if (editParticipants.getText().toString().isEmpty() ||
+                    editContent.getText().toString().isEmpty()) {
+                Toast.makeText(CreateGiveawayActivity.this, "Field can't be empty", Toast.LENGTH_SHORT).show();
+            } else {
+                //Post data into API
+                //Buid retrofit
+                Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
+                GiveawayApi giveawayApi = retrofit.create(GiveawayApi.class);
+                Call<GiveawayDAO> giveawayDAOCall = giveawayApi.addGiveaway(firebaseAuth.getCurrentUser().getUid(),
+                        editContent.getText().toString(),
+                        "https://res.cloudinary.com/dhzln70wz/image/upload/v1537276689/etude-house-treats-for-my-sweets-items.jpg",
+                        spinnerRegion.getSelectedCountryName(),
+                        Integer.parseInt(editParticipants.getText().toString()), "Active");
+                giveawayDAOCall.enqueue(new Callback<GiveawayDAO>() {
+                    @Override
+                    public void onResponse(Call<GiveawayDAO> call, Response<GiveawayDAO> response) {
+                        if (response.isSuccessful()) {
+                            startActivity(new Intent(CreateGiveawayActivity.this, Navigation.class));
+                            Toast.makeText(CreateGiveawayActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GiveawayDAO> call, Throwable t) {
+                        Toast.makeText(CreateGiveawayActivity.this, "Network Connection Fail", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        private void uploadImage(Bitmap bitmap, Uri imageUri) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] data = baos.toByteArray();
+
+            StorageReference storageReference = firebaseStorage.getReference();
+            StorageReference imageRef = storageReference.child(imageUri.toString());
+
+            Log.d("URI", imageUri.toString());
+
+            UploadTask uploadTask = imageRef.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(CreateGiveawayActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                    // ...
                 }
             });
         }
     }
-
-    private void uploadImage(Bitmap bitmap, Uri imageUri) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
-
-        StorageReference storageReference = firebaseStorage.getReference();
-        StorageReference imageRef = storageReference.child(imageUri.toString());
-
-        Log.d("URI", imageUri.toString());
-
-        UploadTask uploadTask = imageRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(CreateGiveawayActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
-            }
-        });
-    }
-}
