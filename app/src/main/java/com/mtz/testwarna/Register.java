@@ -171,7 +171,7 @@ public class Register extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        String id = databaseUsername.push().getKey();
+                                        String id = task.getResult().getUser().getUid();
                                         data = new Username(fullname.getText().toString(),
                                                 username.getText().toString(),
                                                 encryptedPassword, email.getText().toString(), "-", "-", "-");

@@ -16,6 +16,9 @@ public interface GiveawayParticipantsApi {
     @GET("giveaways/{giveaway_id}/participants")
     Call<GiveawayParticipantValue> getGiveawayParticipantsList(@Path("giveaway_id") int giveawayId);
 
+    @GET("giveaway/{giveaway_id/participants/winner")
+    Call<GiveawayParticipantValue> getWinner(@Path("giveaway_id") int giveawayId);
+
     @POST("giveaways/{giveaway_id}/participants")
     @FormUrlEncoded
     Call<GiveawayParticipantDAO> joinGiveaway(@Field("user_id") String userId,

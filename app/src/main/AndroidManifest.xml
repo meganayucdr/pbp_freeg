@@ -45,6 +45,7 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".CreateGiveawayActivity" />
         <activity android:name=".EditGiveawayActivity" />
+        <activity android:name=".MainParticipant"></activity>
     </application>
 
 </manifest>

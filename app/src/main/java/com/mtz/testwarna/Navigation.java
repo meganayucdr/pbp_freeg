@@ -17,6 +17,7 @@ public class Navigation extends AppCompatActivity
 
     TextView nama, email;
     SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,9 +58,9 @@ public class Navigation extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentUserProfile()).commit();
         } else if (id == R.id.nav_giveaways) {
             fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentShow()).commit();
-        } else if (id == R.id.nav_mygiveaway)    {
+        } else if (id == R.id.nav_mygiveaway) {
             fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentMyGiveaway()).commit();
-        }else if (id == R.id.nav_jgiveaway) {
+        } else if (id == R.id.nav_jgiveaway) {
             fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentJoinedGiveaway()).commit();
         } else if (id == R.id.nav_create) {
             Intent i = new Intent(Navigation.this, CreateGiveawayActivity.class);

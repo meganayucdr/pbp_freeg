@@ -20,10 +20,10 @@ public interface GiveawayApi {
     @GET("giveaways/show/{user_id}")
     Call<GiveawayValue> getGiveawaysByUser(@Path("user_id") String user_id);
 
-    @GET("giveaways/{user_id/joined")
+    @GET("giveaways/{user_id}/joined")
     Call<GiveawayValue> getJoinedGiveaway(@Path("user_id") String user_id);
 
-    @GET("giveaways/{user_id/won")
+    @GET("giveaways/{user_id}/won")
     Call<GiveawayValue> getWonGiveaway(@Path("user_id") String user_id);
 
     @POST("giveaways")
@@ -45,7 +45,6 @@ public interface GiveawayApi {
                                 @Path("giveaway_id") int giveaway_id);
 
     @DELETE("giveaways/{giveaway_id}")
-    @FormUrlEncoded
     Call<ResponseBody> deleteGiveaway(@Path("giveaway_id") int giveaway_id);
 
 }

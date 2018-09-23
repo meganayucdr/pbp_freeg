@@ -16,8 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mtz.testwarna.CreateGiveawayActivity;
 import com.mtz.testwarna.R;
+import com.mtz.testwarna.Username;
 import com.mtz.testwarna.api.GiveawayApi;
 import com.mtz.testwarna.api.GiveawayParticipantsApi;
 import com.mtz.testwarna.dao.GiveawayDAO;
@@ -56,6 +62,23 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
 
     public void onBindViewHolder(@NonNull final AllGiveawayAdapter.MyViewHolder myViewHolder, int i) {
         final GiveawayDAO ga = result.get(i);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("User");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(ga.getUserId()).getValue() != null)  {
+                    myViewHolder.userid.setText(dataSnapshot.child(ga.getUserId()).getValue(Username.class).getUsername());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(context,databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         myViewHolder.userid.setText(ga.getUserId());
         myViewHolder.desc.setText(ga.getDescription());
         myViewHolder.btnJoin.setOnClickListener(new View.OnClickListener() {
@@ -94,20 +117,16 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onClickJoin(int giveawayId)  {
         Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
-        GiveawayParticipantsApi giveawayParticipantsApi = retrofit.create(GiveawayParticipantsApi.class);
-        Call<GiveawayParticipantDAO> joinGiveaway = giveawayParticipantsApi.joinGiveaway(firebaseAuth.getCurrentUser().getUid(), giveawayId);
+        GiveawayParticipantsApi giveawayParticipantsApi = retrofit
+                .create(GiveawayParticipantsApi.class);
+        Call<GiveawayParticipantDAO> joinGiveaway = giveawayParticipantsApi
+                .joinGiveaway(firebaseAuth.getCurrentUser().getUid(), giveawayId);
         joinGiveaway.enqueue(new Callback<GiveawayParticipantDAO>() {
             @Override
             public void onResponse(Call<GiveawayParticipantDAO> call, Response<GiveawayParticipantDAO> response) {
                 String message = response.message();
-
-                Log.d("yay", message);
-
-                if (message.equalsIgnoreCase("Success"))    {
-                    //Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()) {
+                    Log.d("yay", message);
                 }
             }
 
@@ -117,5 +136,4 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
             }
         });
     }
-
 }

@@ -23,6 +23,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -66,22 +71,14 @@ public class CreateGiveawayActivity extends AppCompatActivity {
 
         setAttribute();
         assignUser();
-
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onClick(View view) {
-                onClickPost();
-            }
-        });
-        imageGiveaway.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, RESULT_CODE);
-            }
-        });
+//        imageGiveaway.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+//                photoPickerIntent.setType("image/*");
+//                startActivityForResult(photoPickerIntent, RESULT_CODE);
+//            }
+//        });
     }
 
     /*@Override
@@ -110,16 +107,41 @@ public class CreateGiveawayActivity extends AppCompatActivity {
         editContent = (EditText) findViewById(R.id.editContent);
         btnPost = (Button) findViewById(R.id.btnPost);
         imageGiveaway = (ImageView) findViewById(R.id.giveawayImage);
+
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View view) {
+                onClickPost();
+            }
+        });
     }
-    private void assignUser()   {
-        //txtUser.setText(firebaseAuth.getCurrentUser().getDisplayName());
-        Log.d("User", firebaseAuth.getCurrentUser().getUid());
+
+    private void assignUser() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        DatabaseReference ref = database.getReference("User");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(firebaseAuth.getCurrentUser().getUid()).getValue() != null) {
+                    Username username = dataSnapshot.child(firebaseAuth.getCurrentUser().getUid()).getValue(Username.class);
+                    Log.d("user", username.getUsername());
+                    txtUser.setText(username.getUsername());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d("ERROR", databaseError.getMessage());
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void onClickPost()  {
+    private void onClickPost() {
         if (editParticipants.getText().toString().isEmpty() ||
-                editContent.getText().toString().isEmpty())   {
+                editContent.getText().toString().isEmpty()) {
             Toast.makeText(CreateGiveawayActivity.this, "Field can't be empty", Toast.LENGTH_SHORT).show();
         } else {
             //Post data into API
@@ -134,7 +156,11 @@ public class CreateGiveawayActivity extends AppCompatActivity {
             giveawayDAOCall.enqueue(new Callback<GiveawayDAO>() {
                 @Override
                 public void onResponse(Call<GiveawayDAO> call, Response<GiveawayDAO> response) {
-                    Toast.makeText(CreateGiveawayActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                    if (response.isSuccessful()) {
+                        startActivity(new Intent(CreateGiveawayActivity.this, Navigation.class));
+                        Toast.makeText(CreateGiveawayActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 }
 
                 @Override

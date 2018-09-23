@@ -18,6 +18,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mtz.testwarna.EditActivity;
 import com.mtz.testwarna.EditGiveawayActivity;
+import com.mtz.testwarna.MainParticipant;
+import com.mtz.testwarna.Navigation;
 import com.mtz.testwarna.R;
 import com.mtz.testwarna.api.GiveawayApi;
 import com.mtz.testwarna.dao.GiveawayDAO;
@@ -77,6 +79,17 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
                 onClickDelete(giveawayDAO.getId());
             }
         });
+
+        giveawayViewHolder.btnParticipants.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MainParticipant.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", giveawayDAO.getId());
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -89,6 +102,8 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
         //private ImageView imageGiveaway;
         private Button btnEdit;
         private Button btnDelete;
+        private Button btnParticipants;
+
         public GiveawayViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -96,6 +111,7 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
             //imageGiveaway =
             btnEdit = (Button) itemView.findViewById(R.id.btnEdit);
             btnDelete = (Button) itemView.findViewById(R.id.btnDelete);
+            btnParticipants = (Button) itemView.findViewById(R.id.btnParticipants);
         }
     }
 
@@ -107,6 +123,7 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
         giveawayDAOCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                context.startActivity(new Intent(context, Navigation.class));
                 Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
             }
 

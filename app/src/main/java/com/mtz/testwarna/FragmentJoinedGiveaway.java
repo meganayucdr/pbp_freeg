@@ -39,6 +39,7 @@ public class FragmentJoinedGiveaway extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     FirebaseAuth firebaseAuth;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -52,8 +53,9 @@ public class FragmentJoinedGiveaway extends Fragment {
         recyclerView.setAdapter(joinedGiveawayAdapter);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        getData();
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
