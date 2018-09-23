@@ -12,9 +12,9 @@ public class GiveawayDAO {
     @SerializedName("user_id")
     @Expose
     private String userId;
-    @SerializedName("contentx")
+    @SerializedName("description")
     @Expose
-    private String content;
+    private String description;
     @SerializedName("image")
     @Expose
     private String image;
@@ -50,12 +50,12 @@ public class GiveawayDAO {
         this.userId = userId;
     }
 
-    public String getContent() {
-        return content;
+    public String getDescription() {
+        return description;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImage() {
@@ -111,7 +111,7 @@ public class GiveawayDAO {
         return "GiveawayDAO{" +
                 "id=" + id +
                 ", userId='" + userId + '\'' +
-                ", content='" + content + '\'' +
+                ", description='" + description + '\'' +
                 ", image='" + image + '\'' +
                 ", location='" + location + '\'' +
                 ", participants='" + participants + '\'' +

@@ -3,6 +3,7 @@ package com.mtz.testwarna.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mtz.testwarna.EditActivity;
+import com.mtz.testwarna.EditGiveawayActivity;
 import com.mtz.testwarna.R;
 import com.mtz.testwarna.api.GiveawayApi;
 import com.mtz.testwarna.dao.GiveawayDAO;
@@ -23,6 +25,7 @@ import com.mtz.testwarna.network.RetrofitInstance;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,16 +54,19 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
     @Override
     public void onBindViewHolder(@NonNull MyGiveawayAdapter.GiveawayViewHolder giveawayViewHolder, int i) {
         final GiveawayDAO giveawayDAO = result.get(i);
-        giveawayViewHolder.txtContent.setText(giveawayDAO.getContent());
+        giveawayViewHolder.txtContent.setText(giveawayDAO.getDescription());
         giveawayViewHolder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, EditActivity.class);
-                intent.putExtra("image", giveawayDAO.getImage());
-                intent.putExtra("giveawayId", giveawayDAO.getId());
-                intent.putExtra("content", giveawayDAO.getContent());
-                intent.putExtra("location", giveawayDAO.getLocation());
-                intent.putExtra("participants", giveawayDAO.getParticipants());
+                Intent intent = new Intent(context, EditGiveawayActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putString("content", giveawayDAO.getDescription());
+                bundle.putString("participants", giveawayDAO.getParticipants());
+                bundle.putString("image", giveawayDAO.getImage());
+                bundle.putInt("id", giveawayDAO.getId());
+
+                intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         });
@@ -75,7 +81,7 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
 
     @Override
     public int getItemCount() {
-        return 0;
+        return result.size();
     }
 
     public class GiveawayViewHolder extends RecyclerView.ViewHolder {
@@ -97,15 +103,15 @@ public class MyGiveawayAdapter extends RecyclerView.Adapter<MyGiveawayAdapter.Gi
     private void onClickDelete(int giveawayId)   {
         Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
         GiveawayApi giveawayApi = retrofit.create(GiveawayApi.class);
-        Call<String> giveawayDAOCall = giveawayApi.deleteGiveaway("Non Active", giveawayId);
-        giveawayDAOCall.enqueue(new Callback<String>() {
+        Call<ResponseBody> giveawayDAOCall = giveawayApi.deleteGiveaway(giveawayId);
+        giveawayDAOCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Toast.makeText(context, "Deleted!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(context, "Network Connection Fail", Toast.LENGTH_SHORT).show();
             }
         });

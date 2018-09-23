@@ -59,14 +59,10 @@ public class Navigation extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentShow()).commit();
         } else if (id == R.id.nav_mygiveaway)    {
             fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentMyGiveaway()).commit();
-
         }else if (id == R.id.nav_jgiveaway) {
-
+            fragmentManager.beginTransaction().replace(R.id.framelay, new FragmentJoinedGiveaway()).commit();
         } else if (id == R.id.nav_create) {
             Intent i = new Intent(Navigation.this, CreateGiveawayActivity.class);
-            startActivity(i);
-        } else if (id == R.id.nav_edit) {
-            Intent i = new Intent(Navigation.this, EditGiveawayActivity.class);
             startActivity(i);
         } else if (id == R.id.nav_about) {
 

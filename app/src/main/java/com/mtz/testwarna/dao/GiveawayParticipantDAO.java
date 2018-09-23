@@ -14,7 +14,7 @@ public class GiveawayParticipantDAO {
     private String userId;
     @SerializedName("giveaway_id")
     @Expose
-    private String giveawayId;
+    private Integer giveawayId;
     @SerializedName("status")
     @Expose
     private String status;
@@ -41,11 +41,11 @@ public class GiveawayParticipantDAO {
         this.userId = userId;
     }
 
-    public String getGiveawayId() {
+    public Integer getGiveawayId() {
         return giveawayId;
     }
 
-    public void setGiveawayId(String giveawayId) {
+    public void setGiveawayId(Integer giveawayId) {
         this.giveawayId = giveawayId;
     }
 

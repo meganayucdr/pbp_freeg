@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.w3c.dom.Text;
 
@@ -40,7 +41,7 @@ import java.util.List;
 import se.simbio.encryption.Encryption;
 
 public class Register extends AppCompatActivity {
-    EditText username, password, email, fullname;
+    MaterialEditText username, password, email, fullname, confirm;
     Button btnCreate;
     Username data;
     List<Username> listUser;
@@ -131,17 +132,19 @@ public class Register extends AppCompatActivity {
     }
 
     public void onClickRegister() {
-        boolean userCheck, passCheck, emailCheck;
+        boolean userCheck, passCheck=true, emailCheck;
         userCheck = validationFieldCheck("Username", username.getText().toString(), 5, 12);
-        passCheck = validationFieldCheck("Password", password.getText().toString(), 5, 12);
         emailCheck = isValidEmail(email.getText().toString());
+        if(!password.getText().toString().equals(confirm.getText().toString())) {
+            Toast.makeText(getApplicationContext(), "Konfirmasi password salah!", Toast.LENGTH_SHORT).show();
+            passCheck=false;
+        }
+
         if(emailCheck==false) {
             Toast.makeText(getApplicationContext(), "Email tidak valid!", Toast.LENGTH_SHORT).show();
         }
 
-        Log.d("Email valid : ", String.valueOf(emailCheck));
-
-        if(userCheck==true && passCheck==true && emailCheck==true) {
+        if(userCheck==true && emailCheck==true && passCheck==true) {
             if(checkDatabase == true) {
                 Log.d("Size", "Total data : " + listUser.size());
                 indexOfList=-1;
@@ -218,11 +221,12 @@ public class Register extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        fullname = (EditText) findViewById(R.id.fieldregName);
-        username = (EditText) findViewById(R.id.fieldregUsername);
-        password = (EditText) findViewById(R.id.fieldregPassword);
-        email = (EditText) findViewById(R.id.fieldregEmail);
+        fullname = (MaterialEditText) findViewById(R.id.fieldregName);
+        username = (MaterialEditText) findViewById(R.id.fieldregUsername);
+        password = (MaterialEditText) findViewById(R.id.fieldregPassword);
+        email = (MaterialEditText) findViewById(R.id.fieldregEmail);
         btnCreate = (Button) findViewById(R.id.btnregCreate);
+        confirm = (MaterialEditText) findViewById(R.id.fieldregConfirm);
     }
 }
 

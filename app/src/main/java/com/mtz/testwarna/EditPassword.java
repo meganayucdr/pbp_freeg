@@ -58,12 +58,30 @@ public class EditPassword extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //belum di
-                String key = "YourKey";
+                String keys = "YourKey";
                 String salt = "YourSalt";
                 byte[] iv = new byte[16];
-                Encryption encryption = Encryption.getDefault(key, salt, iv);
+                Encryption encryption = Encryption.getDefault(keys, salt, iv);
                 String encrypted = encryption.encryptOrNull(passwordbaru.getText().toString());
-                database.child(key).child("password").setValue(encrypted);
+
+                if(!encryption.encryptOrNull(passwordlama.getText().toString()).equals(user.getPassword())) {
+                    Toast.makeText(getApplicationContext(), "Recent password invalid!", Toast.LENGTH_SHORT).show();
+                }
+
+                else
+                {
+
+                    if(!passwordbaru.getText().toString().equals(confpass.getText().toString())) {
+                        Toast.makeText(getApplicationContext(), "Confirmation password invalid!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    else {
+                        database.child(key).child("password").setValue(encrypted);
+                        Toast.makeText(getApplicationContext(), "Password successfully edited!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+
             }
         });
     }
@@ -78,7 +96,7 @@ public class EditPassword extends AppCompatActivity {
         btnEditPs = (Button) findViewById(R.id.btnEditPs);
         passwordlama = (MaterialEditText) findViewById(R.id.passwordlama);
         passwordbaru = (MaterialEditText) findViewById(R.id.passwordbaru);
-        confpass = (MaterialEditText) findViewById(R.id.passwordbaru);
+        confpass = (MaterialEditText) findViewById(R.id.confirmpassbaru);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarEditPs);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -21,6 +21,7 @@ import com.mtz.testwarna.R;
 import com.mtz.testwarna.api.GiveawayApi;
 import com.mtz.testwarna.api.GiveawayParticipantsApi;
 import com.mtz.testwarna.dao.GiveawayDAO;
+import com.mtz.testwarna.dao.GiveawayParticipantDAO;
 import com.mtz.testwarna.network.RetrofitInstance;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
 
     private Context context;
     private List<GiveawayDAO> result;
-    FirebaseAuth firebaseAuth;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
     public AllGiveawayAdapter(Context context, List<GiveawayDAO> result) {
@@ -56,7 +57,7 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
     public void onBindViewHolder(@NonNull final AllGiveawayAdapter.MyViewHolder myViewHolder, int i) {
         final GiveawayDAO ga = result.get(i);
         myViewHolder.userid.setText(ga.getUserId());
-        myViewHolder.desc.setText(ga.getContent());
+        myViewHolder.desc.setText(ga.getDescription());
         myViewHolder.btnJoin.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -92,14 +93,12 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void onClickJoin(int giveawayId)  {
-        firebaseAuth = FirebaseAuth.getInstance();
-
         Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
         GiveawayParticipantsApi giveawayParticipantsApi = retrofit.create(GiveawayParticipantsApi.class);
-        Call<String> joinGiveaway = giveawayParticipantsApi.joinGiveaway(firebaseAuth.getCurrentUser().getUid(), giveawayId);
-        joinGiveaway.enqueue(new Callback<String>() {
+        Call<GiveawayParticipantDAO> joinGiveaway = giveawayParticipantsApi.joinGiveaway(firebaseAuth.getCurrentUser().getUid(), giveawayId);
+        joinGiveaway.enqueue(new Callback<GiveawayParticipantDAO>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
+            public void onResponse(Call<GiveawayParticipantDAO> call, Response<GiveawayParticipantDAO> response) {
                 String message = response.message();
 
                 Log.d("yay", message);
@@ -113,7 +112,7 @@ public class AllGiveawayAdapter extends RecyclerView.Adapter<AllGiveawayAdapter.
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<GiveawayParticipantDAO> call, Throwable t) {
                 Log.d("yay", "full");
             }
         });

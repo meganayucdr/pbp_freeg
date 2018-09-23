@@ -14,16 +14,16 @@
             android:title="Giveaways" />
         <item
             android:id="@+id/nav_mygiveaway"
-            android:icon="@drawable/ic_mygiveaway"
+            android:icon="@drawable/ic_won"
             android:title="My Giveaway" />
+        <item
+            android:id="@+id/nav_won_giveaway"
+            android:icon="@drawable/ic_mygiveaway"
+            android:title="Won" />
         <item
             android:id="@+id/nav_create"
             android:icon="@drawable/ic_create"
             android:title="Create Giveaway" />
-        <item
-            android:id="@+id/nav_edit"
-            android:icon="@drawable/ic_edit"
-            android:title="Edit My Giveaway" />
         <item
             android:id="@+id/nav_jgiveaway"
             android:icon="@drawable/ic_joinedgiveaway"

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.hbb20.CountryCodePicker;
 import com.mtz.testwarna.api.GiveawayApi;
+import com.mtz.testwarna.dao.GiveawayDAO;
 import com.mtz.testwarna.network.RetrofitInstance;
 
 import java.util.ArrayList;
@@ -48,8 +49,8 @@ public class EditGiveawayActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         setAttribute();
-        //assignFromIntent();
-        //assignUser();
+        assignFromIntent();
+        assignUser();
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -87,19 +88,20 @@ public class EditGiveawayActivity extends AppCompatActivity {
             //Buid retrofit
             Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
             GiveawayApi giveawayApi = retrofit.create(GiveawayApi.class);
-            Call<String> giveawayDAOCall = giveawayApi.updateGiveaway(firebaseAuth.getCurrentUser().getUid() ,editContent2.getText().toString(),
+            Call<GiveawayDAO> giveawayDAOCall = giveawayApi.updateGiveaway(firebaseAuth.getCurrentUser().getUid(),
+                    editContent2.getText().toString(),
                     "https://res.cloudinary.com/dhzln70wz/image/upload/v1537276689/etude-house-treats-for-my-sweets-items.jpg",
                     Integer.parseInt(editParticipants2.getText().toString()), "Active", giveawayId);
-            giveawayDAOCall.enqueue(new Callback<String>() {
+            giveawayDAOCall.enqueue(new Callback<GiveawayDAO>() {
                 @Override
-                public void onResponse(Call<String> call, Response<String> response) {
+                public void onResponse(Call<GiveawayDAO> call, Response<GiveawayDAO> response) {
                     Toast.makeText(EditGiveawayActivity.this, "Success", Toast.LENGTH_SHORT).show();
 //                    Intent intent = new Intent(EditGiveawayActivity.this, HomeActivity.class);
 //                    startActivity(intent);
                 }
 
                 @Override
-                public void onFailure(Call<String> call, Throwable t) {
+                public void onFailure(Call<GiveawayDAO> call, Throwable t) {
                     Toast.makeText(EditGiveawayActivity.this, "Network Connection Fail", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -108,9 +110,12 @@ public class EditGiveawayActivity extends AppCompatActivity {
 
     private void assignFromIntent() {
         Intent intent = getIntent();
-        editContent2.setText(intent.getStringExtra("content"));
-        editParticipants2.setText(intent.getStringExtra("participant"));
-        //spinnerRegion2.setSelection(Integer.parseInt(intent.getStringExtra("selectedRegion")));
-        giveawayId = Integer.parseInt(intent.getStringExtra("giveawayId"));
+        Bundle bundle = intent.getExtras();
+
+        editContent2.setText(bundle.getString("content"));
+        editParticipants2.setText(bundle.getString("participants"));
+        giveawayId = bundle.getInt("id");
+
+        //giveawayId = Integer.parseInt(intent.getStringExtra("giveawayId"));
     }
 }

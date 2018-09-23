@@ -75,9 +75,19 @@ public class EditActivity extends AppCompatActivity {
                         editFullname.setText(user.getName());
                         editEmail.setText(user.getEmail());
                         urlimage = user.getPhoto_uri();
-                        Glide.with(EditActivity.this)
-                                .load(urlimage)
-                                .into(btnImage);
+
+                        if(urlimage.equals("-")) {
+                            Glide.with(EditActivity.this)
+                                    .load(R.mipmap.profile_picture)
+                                    .into(btnImage);
+                        }
+
+                        else {
+                            Glide.with(EditActivity.this)
+                                    .load(urlimage)
+                                    .into(btnImage);
+                        }
+
                         ccp.setCountryForNameCode(user.getLocation_id());
                         break;
                     }
@@ -100,6 +110,7 @@ public class EditActivity extends AppCompatActivity {
                 database.child(key).child("location").setValue(ccp.getSelectedCountryName());
                 database.child(key).child("location_id").setValue(ccp.getSelectedCountryNameCode());
                 uploadImage();
+                Toast.makeText(getApplicationContext(), "Profile updated!", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -165,7 +176,8 @@ public class EditActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     link = uri.toString();
-                                    Toast.makeText(getApplicationContext(), "MASOK PAK EKO", Toast.LENGTH_LONG).show();
+                                    sp.edit().putString("photo", link).apply();
+                                    //Toast.makeText(getApplicationContext(), "MASOK PAK EKO", Toast.LENGTH_LONG).show();
                                     database.child(key).child("photo_uri").setValue(link);
                                 }
                             });

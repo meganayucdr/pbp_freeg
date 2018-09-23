@@ -1,11 +1,10 @@
 package com.mtz.testwarna;
 
+import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,12 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.mtz.testwarna.adapter.MyGiveawayAdapter;
+import com.mtz.testwarna.adapter.JoinedGiveawayAdapter;
 import com.mtz.testwarna.api.GiveawayApi;
 import com.mtz.testwarna.dao.GiveawayDAO;
 import com.mtz.testwarna.network.RetrofitInstance;
@@ -33,31 +30,30 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class FragmentMyGiveaway extends Fragment{
+public class FragmentJoinedGiveaway extends Fragment {
     View view;
     SessionManager sessionManager;
     private List<GiveawayDAO> giveawayList = new ArrayList<>();
     private RecyclerView recyclerView;
-    private MyGiveawayAdapter myGiveawayAdapter;
+    private JoinedGiveawayAdapter joinedGiveawayAdapter;
     private RecyclerView.LayoutManager layoutManager;
     FirebaseAuth firebaseAuth;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.activity_my_giveaway, container, false);
-        recyclerView = view.findViewById(R.id.rec_my_giveaway);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.activity_joined_giveaway, container, false);
+        recyclerView = view.findViewById(R.id.rec_joined_giveaway);
         recyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(), LinearLayoutManager.VERTICAL));
-        myGiveawayAdapter = new MyGiveawayAdapter(view.getContext(), giveawayList);
+        joinedGiveawayAdapter = new JoinedGiveawayAdapter(view.getContext(), giveawayList);
         layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(myGiveawayAdapter);
+        recyclerView.setAdapter(joinedGiveawayAdapter);
 
-        getData();
+        firebaseAuth = FirebaseAuth.getInstance();
 
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -65,19 +61,19 @@ public class FragmentMyGiveaway extends Fragment{
         Retrofit retrofit = RetrofitInstance.getRetrofitInstance();
         GiveawayApi apiClient = retrofit.create(GiveawayApi.class);
 
-        Call<GiveawayValue> giveawayValueCall = apiClient.getGiveawaysByUser(firebaseAuth.getInstance().getCurrentUser().getUid());
+        Call<GiveawayValue> giveawayValueCall = apiClient.getJoinedGiveaway(firebaseAuth.getCurrentUser().getUid());
 
         giveawayValueCall.enqueue(new Callback<GiveawayValue>() {
             @Override
             public void onResponse(Call<GiveawayValue> call, Response<GiveawayValue> response) {
-                myGiveawayAdapter.notifyDataSetChanged();
+                joinedGiveawayAdapter.notifyDataSetChanged();
                 List<GiveawayDAO> giveawayDAOList = response.body().getData();
 
-                if (giveawayDAOList.isEmpty()) {
+                if (giveawayDAOList.isEmpty())  {
                     Log.d("ERROR", "Empty");
                 } else {
-                    myGiveawayAdapter = new MyGiveawayAdapter(view.getContext(), giveawayDAOList);
-                    recyclerView.setAdapter(myGiveawayAdapter);
+                    joinedGiveawayAdapter = new JoinedGiveawayAdapter(view.getContext(), giveawayDAOList);
+                    recyclerView.setAdapter(joinedGiveawayAdapter);
                     Toast.makeText(view.getContext(), "Welcome", Toast.LENGTH_SHORT).show();
                 }
             }
